@@ -36,10 +36,12 @@ def request_indexpages(url):
 def parse_indexpage(info):
     # parse indexpage
     soup = BeautifulSoup(info, "html.parser")
+    # 找到所有的tr元素
     all_tr = soup.findAll('tr')[1:]
     url = "http://paper.tuisec.win"
     item = []
     for i in all_tr:
+        # 找到每个tr元素中所有的td元素
         td = i.findAll('td')
         data = {"time": td[0].string,
                 "name": td[1].string,
@@ -109,7 +111,33 @@ def main():
     print item[14]
 
 
+def normal_request():
+    # 在HTTP请求的方法不是“HEAD”，并且服务器想让客户端知道为什么没有权限的情况下，服务器应该在返回的信息中描述拒绝的理由。
+    url = "http://paper.tuisec.win/"
+    request = urllib2.Request(url)
+    response = urllib2.urlopen(request)
+    info = response.read()
+    print info
+
+
+def header_request():
+    # 这里加了header
+    cookie = "__cfduid=dbb7103e944abcd40af1499304d0bd5e81525109305; __tins__19225774=%7B%22sid%22%3A%201526806511236%2C%20%22vd%22%3A%202%2C%20%22expires%22%3A%201526808380562%7D; __51cke__=; __51laig__=2"
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0"
+    header = {
+        'User-Agent': user_agent,
+        'Cookie': cookie
+    }
+    url = "http://paper.tuisec.win/"
+    request = urllib2.Request(url, headers=header)
+    response = urllib2.urlopen(request)
+    info = response.read()
+    print info
+
+
 if __name__ == "__main__":
     # main()
-    get4()
+    # get4()
     # test()
+    # normal_request()
+    header_request()
